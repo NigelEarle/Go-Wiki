@@ -25,20 +25,14 @@ func loadPage(title string) (*Page, error) {
   return &Page{Title: title, Body: body}, nil
 }
 
-// func main() {
-//   p1 := &Page{Title: "The First Page", Body: []byte("the first page body")}
-//   p1.save()
-//   p2, _ := loadPage("The First Page")
-//   fmt.Println(string(p2.Body))
-// }
-
-// ------------- Simple Server
-
-func handler(w http.ResponseWriter, r *http.Request){
-  fmt.Fprintf(w, "Hi, I love %s!", r.URL.Path[1:])
+func viewHandler(w http.ResponseWriter, r *http.Request){
+  title := r.URL.Path[len("/view/"):]
+  p, _ := loadPage(title)
+  fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
 }
 
+
 func main() {
-  http.HandleFunc("/", handler)
+  http.HandleFunc("/view/", viewHandler)
   http.ListenAndServe(":8080", nil)
 }
